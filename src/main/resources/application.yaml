@@ -1,0 +1,36 @@
+spring:
+  application:
+    name : bookstore
+
+  datasource:
+      url: jdbc:mysql://localhost:3306/bookstore
+      username: root
+      password: zx220904
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+# 服务器配置
+server:
+  address: 0.0.0.0
+  port: 8080
+
+
+base-dir: D:\working\Java\projects\bookstore
+path:
+  data-dir: ${base-dir}/data
+  pst-dir: ${data-dir}/pst
+  tmp-dir: ${data-dir}/tmp
+
+  image-dir: ${pst-dir}/images
+  upload-dir: ${tmp-dir}/uploads
+  log-dir: ${tmp-dir}/logs
+
+ai:
+  openai:
+    api-key: sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    api-base-url: https://api.openai.com/v1
+    timeout: 30
+
+  silicon-flow:
+    api-key: sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    api-base-url: https://api.siliconflow.cn/v1/chat/completions
+    timeout: 30
