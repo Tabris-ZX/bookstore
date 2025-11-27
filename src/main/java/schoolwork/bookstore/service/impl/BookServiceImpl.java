@@ -67,7 +67,7 @@ public class BookServiceImpl implements BookService {
         LambdaQueryWrapper<Book> queryWrapper = new LambdaQueryWrapper<>();
         if(bookQuery.getTags()!=null) queryWrapper.eq(Book::getTags,bookQuery.getTags());
         if (bookQuery.getAuthor()!=null) queryWrapper.eq(Book::getAuthor,bookQuery.getAuthor());
-        if(bookQuery.getStock()!=null) queryWrapper.eq(Book::getStock,bookQuery.getStock());
+//        if(bookQuery.isStock()) queryWrapper.eq(Book::getStock,bookQuery.getStock());
         return List.of();
     }
 
