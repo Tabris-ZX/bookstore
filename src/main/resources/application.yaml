@@ -13,7 +13,6 @@ server:
   address: 0.0.0.0
   port: 8080
 
-
 base-dir: D:\working\Java\projects\bookstore
 path:
   data-dir: ${base-dir}/data
@@ -23,6 +22,10 @@ path:
   image-dir: ${pst-dir}/images
   upload-dir: ${tmp-dir}/uploads
   log-dir: ${tmp-dir}/logs
+
+jwt:
+    secret: njuit
+    expiration: 36000
 
 ai:
   openai:
