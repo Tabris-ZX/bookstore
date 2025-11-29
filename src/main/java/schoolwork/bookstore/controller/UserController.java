@@ -1,10 +1,11 @@
 package schoolwork.bookstore.controller;
 
-import org.springframework.stereotype.Controller;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
+import schoolwork.bookstore.dto.LoginRequest;
 import schoolwork.bookstore.model.User;
-import schoolwork.bookstore.pojo.Result;
-import schoolwork.bookstore.service.CartService;
+import schoolwork.bookstore.dto.Result;
+import schoolwork.bookstore.model.UserInfo;
 import schoolwork.bookstore.service.UserService;
 import schoolwork.bookstore.util.JwtUtil;
 
@@ -12,14 +13,10 @@ import schoolwork.bookstore.util.JwtUtil;
 @RequestMapping("/api/users")
 public class UserController {
 
-    UserService userService;
-    CartService cartService;
-    JwtUtil jwtUtil;
+    private final UserService userService;
 
-    public UserController(UserService userService, CartService cartService, JwtUtil jwtUtil) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.cartService = cartService;
-        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/register")
@@ -29,10 +26,23 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Result login(@RequestBody User user){
-        User cur = userService.login(user.getUsername(), user.getPassword());
+    public Result login(@RequestBody LoginRequest loginUser){
+        User cur;
+        switch (loginUser.getLoginType()){
+            case "username" ->
+                    cur = userService.loginByUsername(loginUser.getUsername(), loginUser.getPassword());
+            case "uid" ->
+                    cur = userService.loginByUid(loginUser.getUid(), loginUser.getPassword());
+            case "phone" ->
+            {
+                return Result.success("手机号登录功能维护中...");
+            }
+            default -> {
+                return Result.error("不支持的登录类型");
+            }
+        }
         if (cur != null){
-            String token = jwtUtil.getJwt(cur);
+            String token = JwtUtil.getJwt(cur);
             return  Result.success(token);
         }else {
             return Result.error("用户不存在或密码错误");
@@ -44,31 +54,32 @@ public class UserController {
         return Result.success(userService.getUserByUid(uid));
     }
 
+    @GetMapping("/profile")
+    public Result getProfile(HttpServletRequest request) {
+        long uid = JwtUtil.getUid(request);
+        return Result.success(userService.getUserByUid(uid));
+    }
+
     @PutMapping("/{uid}")
-    public Result updateUser(@RequestBody User user) {
-        boolean result = userService.updateInfo(user);
+    public Result updateUserProfile(@RequestBody UserInfo userInfo) {
+        boolean result = userService.updateInfo(userInfo);
         return result ? Result.success() : Result.error("更新用户信息失败");
     }
 
-    @GetMapping("/{uid}/cart/add")
-    public Result addBooksToCart(@PathVariable long uid,
-                                 @RequestParam long bid,
-                                 @RequestParam int number) {
-        boolean result = userService.addBooksToCart(uid, bid, number);
-        return result? Result.success(): Result.error("添加图书失败");
+    @PutMapping("/changeAuth")
+    public Result changePassword(HttpServletRequest request,
+                                 @RequestBody String username,
+                                 @RequestBody String password) {
+        boolean result = userService.changeAuth(JwtUtil.getUid(request), username, password);
+        return result ? Result.success() : Result.error("修改失败");
     }
 
-    @GetMapping("/{uid}/cart/clear")
-    public Result clearCart(@PathVariable long uid) {
-        boolean result = cartService.clearCart(uid);
-        return result ? Result.success() : Result.error("清空购物车失败");
-    }
-
-    @GetMapping("/{uid}/buy")
-    public Result buyBooks(@PathVariable long uid,
+    @GetMapping("/buy")
+    public Result buyBooks(HttpServletRequest request,
                            @RequestParam long bid,
                            @RequestParam int number) {
-        boolean result = userService.buyBooks(uid, bid, number);
+        boolean result = userService.buyBooks(JwtUtil.getUid(request),bid, number);
         return result ? Result.success() : Result.error("购买失败");
     }
+
 }

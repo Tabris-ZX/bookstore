@@ -3,10 +3,10 @@ spring:
     name : bookstore
 
   datasource:
-      url: jdbc:mysql://localhost:3306/bookstore
-      username: root
-      password: zx220904
-      driver-class-name: com.mysql.cj.jdbc.Driver
+    url:
+    username:
+    password:
+    driver-class-name:
 
 # 服务器配置
 server:
@@ -14,7 +14,8 @@ server:
   port: 8080
 
 #项目物理地址
-base-dir: D:\working\Java\projects\bookstore
+base-dir:
+
 path:
   data-dir: ${base-dir}/data
   pst-dir: ${data-dir}/pst #持久数据
@@ -25,8 +26,8 @@ path:
   log-dir: ${tmp-dir}/logs
 
 jwt:
-    secret: njuit
-    expiration: 3600000
+  secret: #jwt签名
+  expiration: 36000
 
 ai:
   openai:

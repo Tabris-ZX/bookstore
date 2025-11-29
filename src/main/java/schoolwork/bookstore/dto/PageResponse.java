@@ -1,7 +1,6 @@
-package schoolwork.bookstore.pojo;
+package schoolwork.bookstore.dto;
 
 import lombok.Data;
-import schoolwork.bookstore.model.Book;
 
 import java.util.List;
 
@@ -13,13 +12,13 @@ public class PageResponse<T> {
     private Integer totalPage;
     //总条目数
     private Long totalCount;
-    private List<T> data;
+    private List<T> pageData;
 
-    public PageResponse(Integer curPage, Integer pageSize, Long totalCount, List<T> data) {
+    public PageResponse(Integer curPage, Integer pageSize, Long totalCount, List<T> pageData) {
         this.curPage = curPage;
         this.pageSize = pageSize;
         this.totalCount = totalCount;
-        this.data = data;
         this.totalPage = (int) ((totalCount + pageSize - 1) / pageSize);
+        this.pageData = pageData;
     }
 }

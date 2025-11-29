@@ -1,11 +1,7 @@
 package schoolwork.bookstore.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.catalina.LifecycleState;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import schoolwork.bookstore.model.Book;
 
 import java.util.List;
@@ -22,5 +18,8 @@ public interface BookMapper extends BaseMapper<Book> {
     @Update("UPDATE books SET stock = #{curStock} WHERE bid = #{bid}")
     boolean updateBookStock(@Param("bid") long bid,@Param("curStock") int curStock);
 
+    @Insert("INSERT INTO books(bid,title, author, publish) " +
+            "VALUES(#{bid},#{title}, #{author},#{publish})")
+    void addBookByJson(long bid,String title,String author,String publish);
 
 }

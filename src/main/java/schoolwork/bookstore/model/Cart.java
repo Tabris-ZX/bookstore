@@ -1,8 +1,11 @@
 package schoolwork.bookstore.model;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.UUID;
 
 
 /**
@@ -12,7 +15,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName("carts")
 public class Cart {
-    private String id;
     private Long uid;
     private Long bid;
     private Integer number;

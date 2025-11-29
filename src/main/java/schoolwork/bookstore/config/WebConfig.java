@@ -3,14 +3,32 @@ package schoolwork.bookstore.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import schoolwork.bookstore.auth.interceptor.AdminInterceptor;
+import schoolwork.bookstore.auth.interceptor.GlobalInterceptor;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     @Value("${path.data-dir}")
     private String dataDir;
+
+    GlobalInterceptor globalInterceptor;
+    AdminInterceptor adminInterceptor;
+    public WebConfig(GlobalInterceptor globalInterceptor, AdminInterceptor adminInterceptor) {
+        this.globalInterceptor = globalInterceptor;
+        this.adminInterceptor  = adminInterceptor;
+    }
+    /**
+     * 注册拦截器
+     */
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(globalInterceptor).addPathPatterns("/**").excludePathPatterns("/api/users/login","/api/users/register");
+        registry.addInterceptor(adminInterceptor).addPathPatterns("/api/admin/**");
+    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {

@@ -4,9 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.web.bind.annotation.*;
 import schoolwork.bookstore.config.PathConfig;
 import schoolwork.bookstore.model.Book;
-import schoolwork.bookstore.pojo.BookQuery;
-import schoolwork.bookstore.pojo.PageResponse;
-import schoolwork.bookstore.pojo.Result;
+import schoolwork.bookstore.dto.PageResponse;
+import schoolwork.bookstore.dto.Result;
 import schoolwork.bookstore.service.BookService;
 
 import java.util.List;
@@ -15,10 +14,8 @@ import java.util.List;
 @RequestMapping("/api/books")
 public class BookController {
 
-    PathConfig pathConfig;
-    BookService bookService;
-    public BookController(BookService bookService, PathConfig pathConfig) {
-        this.pathConfig = pathConfig;
+    private final BookService bookService;
+    public BookController(BookService bookService) {
         this.bookService = bookService;
     }
 
@@ -28,24 +25,32 @@ public class BookController {
         return Result.success(books);
     }
 
-    @GetMapping("/list")
-    public Result getBooks(@RequestParam int curPage, @RequestParam int size) {
-        IPage<Book> books = bookService.pageBooks(curPage, size);
-        PageResponse<Book> response = new PageResponse<>(curPage,size, books.getTotal(), books.getRecords());
+    /**
+     * 分页查询
+     */
+    @GetMapping
+    public Result getBooks(@RequestParam int page, @RequestParam int size) {
+        IPage<Book> books = bookService.pageBooks(page, size);
+        PageResponse<Book> response = new PageResponse<>(page,size, books.getTotal(), books.getRecords());
         return Result.success(response);
     }
 
     @GetMapping("/search")
-    public Result getBooksByCondition(BookQuery condition) {
-        List<Book> books = bookService.getBooksByCondition(condition);
-        return Result.success(books);
+    public Result getBooksByCondition(@RequestParam(required = false) Integer page,
+                                      @RequestParam(required = false) Integer size,
+                                      @RequestParam(required = false) String keyword,
+                                      @RequestParam(required = false) String author,
+                                      @RequestParam(required = false) String tags,
+                                      @RequestParam(required = false) Boolean isStock){
+
+        if(page == null || size == null)
+
+            return Result.success(bookService.getBooksByCondition(keyword, author, tags, isStock));
+        else{
+            IPage<Book> books = bookService.pageBooksByCondition(page,size,keyword, author, tags, isStock);
+            PageResponse<Book> response = new PageResponse<>(page,size, books.getTotal(), books.getRecords());
+            return Result.success(response);
+        }
+
     }
-
-//    @GetMapping("/")
-//    public Result getBooksByCondition(@RequestParam int curPage, @RequestParam int size, BookQuery condition) {
-//        IPage<Book> books = bookService.pageBooksByCondition(curPage, size, condition);
-//        PageResponse<Book> response = new PageResponse<>(curPage,size, books.getTotal(), books.getRecords());
-//        return Result.success(response);
-//    }
-
 }

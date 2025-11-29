@@ -1,13 +1,11 @@
 package schoolwork.bookstore.controller;
 
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import schoolwork.bookstore.pojo.Result;
+import schoolwork.bookstore.dto.Result;
 
 @RestController
 public class SessionController {

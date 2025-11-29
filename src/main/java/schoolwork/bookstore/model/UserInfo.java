@@ -3,10 +3,12 @@ package schoolwork.bookstore.model;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@TableName("user_profiles")
-public class UserProfile {
+@NoArgsConstructor
+@TableName("user_info")
+public class UserInfo {
 
     @TableId
     private Long uid;
@@ -15,5 +17,9 @@ public class UserProfile {
     private Long phone;
     private String address;
     private String prefer;
+    private Double balance;
 
+    public UserInfo(long uid){
+        this.uid = uid;
+    }
 }

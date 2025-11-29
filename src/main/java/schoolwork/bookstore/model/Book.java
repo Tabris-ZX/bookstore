@@ -18,6 +18,7 @@ public class Book {
     private String title;
     private String author;
     private String description;
+    private String publish;
     @TableField("cover_url")
     private String coverUrl;
     private String tags;

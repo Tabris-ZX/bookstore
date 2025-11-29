@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import schoolwork.bookstore.config.PathConfig;
 import schoolwork.bookstore.mapper.BookMapper;
 import schoolwork.bookstore.model.Book;
-import schoolwork.bookstore.pojo.BookQuery;
 import schoolwork.bookstore.service.BookService;
 
 import java.util.List;
@@ -22,22 +21,18 @@ public class BookServiceImpl implements BookService {
         this.bookMapper = bookMapper;
     }
 
-
     @Override
     public List<Book> getAllBooks() {
-        return List.of();
+        return bookMapper.selectList(null) ;
     }
 
     @Override
-    public List<Book> getBooksByCondition(BookQuery bookQuery) {
-        LambdaQueryWrapper<Book> wrapper = new LambdaQueryWrapper<>();
-        if(bookQuery.getCurPage()>0) wrapper.eq(Book::getBid,bookQuery.getCurPage());
-        if (bookQuery.getSize() > 0) wrapper.like(Book::getBid,bookQuery.getSize());
-        if (bookQuery.isStock()) wrapper.gt(Book::getStock,0);
-        if (bookQuery.getAuthor() != null) wrapper.like(Book::getAuthor,bookQuery.getAuthor());
-        if (bookQuery.getPrice()>0) wrapper.le(Book::getPrice,bookQuery.getPrice());
-        if (bookQuery.getTags() != null) wrapper.eq(Book::getTags,bookQuery.getTags());
-        return bookMapper.selectList(wrapper);
+    public List<Book> getBooksByCondition(String keyword,
+                                          String author,
+                                          String tags,
+                                          Boolean isStock) {
+
+        return bookMapper.selectList(conditions(keyword, author, tags, isStock));
     }
 
     @Override
@@ -48,13 +43,22 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public IPage<Book> pageBooksByCondition(int curPage, int pageSize, BookQuery bookQuery) {
-        return null;
+    public IPage<Book> pageBooksByCondition(int curPage,
+                                            int pageSize,
+                                            String keyword,
+                                            String author,
+                                            String tags,
+                                            Boolean isStock) {
+
+        Page<Book> page = new Page<>(curPage,pageSize);
+        return bookMapper.selectPage(page,conditions(keyword, author, tags, isStock));
     }
 
+
+
     @Override
-    public Book getBookById(long bid) {
-        return bookMapper.selectById(bid);
+    public Book getBookByBid(long bid) {
+        return bookMapper.selectOne(new LambdaQueryWrapper<Book>().eq(Book::getBid,bid));
     }
 
     @Override
@@ -62,13 +66,21 @@ public class BookServiceImpl implements BookService {
         return bookMapper.selectList(new LambdaQueryWrapper<Book>().like(Book::getTitle,keyword));
     }
 
-    @Override
-    public List<Book> searchBooksByCondition(BookQuery bookQuery) {
-        LambdaQueryWrapper<Book> queryWrapper = new LambdaQueryWrapper<>();
-        if(bookQuery.getTags()!=null) queryWrapper.eq(Book::getTags,bookQuery.getTags());
-        if (bookQuery.getAuthor()!=null) queryWrapper.eq(Book::getAuthor,bookQuery.getAuthor());
-//        if(bookQuery.isStock()) queryWrapper.eq(Book::getStock,bookQuery.getStock());
-        return List.of();
-    }
+//    @Override
+//    public List<Book> searchBooksByCondition(BookQuery bookQuery) {
+//        LambdaQueryWrapper<Book> queryWrapper = new LambdaQueryWrapper<>();
+//        if(bookQuery.getTags()!=null) queryWrapper.eq(Book::getTags,bookQuery.getTags());
+//        if (bookQuery.getAuthor()!=null) queryWrapper.eq(Book::getAuthor,bookQuery.getAuthor());
+////        if(bookQuery.isStock()) queryWrapper.eq(Book::getStock,bookQuery.getStock());
+//        return List.of();
+//    }
 
+    private LambdaQueryWrapper<Book> conditions(String keyword, String author, String tags, Boolean isStock) {
+        LambdaQueryWrapper<Book> wrapper = new LambdaQueryWrapper<>();
+        if(keyword!=null && !keyword.isEmpty()) wrapper.like(Book::getTitle,keyword);
+        if(author!=null && !author.isEmpty()) wrapper.eq(Book::getAuthor,author);
+        if(tags!=null && !tags.isEmpty()) wrapper.eq(Book::getTags,tags);
+        if(isStock!=null && isStock) wrapper.gt(Book::getStock,0);
+        return wrapper;
+    }
 }

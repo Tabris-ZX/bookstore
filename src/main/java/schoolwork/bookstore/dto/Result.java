@@ -1,4 +1,4 @@
-package schoolwork.bookstore.pojo;
+package schoolwork.bookstore.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

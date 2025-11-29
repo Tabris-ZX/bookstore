@@ -19,11 +19,13 @@ public class User {
     private String username;
     private String password;
     private Integer status;
+    private Integer role;
 
     public User(String username, String password) {
         this.uid = Build.buildUid();
         this.username = username;
         this.password = password;
         this.status = 1;
+        this.role = 1;
     }
 }

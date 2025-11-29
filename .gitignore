@@ -1,3 +1,9 @@
+
+#数据
+application.yaml
+data/
+
+
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/

@@ -5,18 +5,10 @@ import com.github.yitter.idgen.YitIdHelper;
 public class Build {
 
     public static long buildUid(){
-        long uid = YitIdHelper.nextId()%100000000;
-        while(uid<1e7){
-            uid = YitIdHelper.nextId()%100000000;
-        }
-        return uid;
+        return 10_000_000+YitIdHelper.nextId()%10_000_000;
     }
 //
-//    public static long buildBid(){
-//        long bid = YitIdHelper.nextId()%100000000;
-//        while(bid<1e7){
-//            bid = YitIdHelper.nextId()%100000000;
-//        }
-//        return bid;
-//    }
+    public static long buildBid(){
+        return 100_000 + YitIdHelper.nextId()%100_000;
+    }
 }
