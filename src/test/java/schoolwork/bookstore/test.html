@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户 Token 提交</title>
+    <style>
+        /* 简单的 CSS 样式，让页面看起来不那么简陋 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px; /* 内边距 */
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box; /* 确保padding不撑大宽度 */
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .status-msg {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>绑定账户信息</h2>
+    <form id="submissionForm">
+        <div class="form-group">
+            <label for="qq">QQ 号码</label>
+            <input type="number" id="qq" name="qq" placeholder="请输入你的QQ号" required>
+        </div>
+
+        <div class="form-group">
+            <label for="luogu_token">洛谷 Token (cookie: _uid/_client_id)</label>
+            <input type="password" id="luogu_token" name="luogu_token" placeholder="粘贴洛谷 Token" required>
+        </div>
+
+        <div class="form-group">
+            <label for="pta_token">PTA Token</label>
+            <input type="password" id="pta_token" name="pta_token" placeholder="粘贴 PTA Token">
+        </div>
+
+        <div class="form-group">
+            <label for="nowcoder_token">牛客 Token</label>
+            <input type="password" id="nowcoder_token" name="nowcoder_token" placeholder="粘贴牛客 Token">
+        </div>
+
+        <button type="submit" id="submitBtn">提交信息</button>
+    </form>
+    <div id="statusMessage" class="status-msg"></div>
+</div>
+
+<script>
+    document.getElementById('submissionForm').addEventListener('submit', function(event) {
+        // 1. 阻止表单默认的跳转行为
+        event.preventDefault();
+
+        const submitBtn = document.getElementById('submitBtn');
+        const statusMsg = document.getElementById('statusMessage');
+
+        // 设置按钮为加载状态
+        submitBtn.disabled = true;
+        submitBtn.innerText = "正在提交...";
+        statusMsg.innerText = "";
+
+        // 2. 获取用户输入的数据
+        const formData = {
+            qq: document.getElementById('qq').value,
+            luogu: document.getElementById('luogu_token').value,
+            pta: document.getElementById('pta_token').value,
+            nowcoder: document.getElementById('nowcoder_token').value
+        };
+
+        // ==========================================
+        // ↓↓↓↓↓ 请在此处补完你的请求逻辑 ↓↓↓↓↓
+        // ==========================================
+
+        // 假设你的后端接口地址是 /api/submit
+        const API_URL = 'http://你的服务器地址/api/submit';
+
+        fetch(API_URL, {
+            method: 'POST', // 或者 'PUT'
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData), // 将数据转换为 JSON 字符串发送
+        })
+            .then(response => {
+                // 这里处理服务器返回的响应
+                if (response.ok) {
+                    return response.json(); // 如果服务器返回JSON
+                }
+                throw new Error('网络请求失败');
+            })
+            .then(data => {
+                // --- 成功时的逻辑 ---
+                console.log('成功:', data);
+                statusMsg.style.color = "green";
+                statusMsg.innerText = "提交成功！感谢您的配合。";
+                // 可选：提交成功后重置表单
+                // document.getElementById('submissionForm').reset();
+            })
+            .catch((error) => {
+                // --- 失败时的逻辑 ---
+                console.error('错误:', error);
+                statusMsg.style.color = "red";
+                statusMsg.innerText = "提交失败，请检查网络或联系管理员。";
+            })
+            .finally(() => {
+                // 恢复按钮状态
+                submitBtn.disabled = false;
+                submitBtn.innerText = "提交信息";
+            });
+
+        // ==========================================
+        // ↑↑↑↑↑ 请求逻辑结束 ↑↑↑↑↑
+        // ==========================================
+    });
+</script>
+
+</body>
+</html>

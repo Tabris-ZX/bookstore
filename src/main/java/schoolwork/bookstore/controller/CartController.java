@@ -36,5 +36,15 @@ public class CartController {
         return result ? Result.success() : Result.error("清空购物车失败");
     }
 
+    @PostMapping("/checkout")
+    public Result checkout(HttpServletRequest request) {
+        try{
+            cartService.cartCheckout(JwtUtil.getUid(request));
+        }catch (Exception e){
+            return Result.error("结算失败: " + e.getMessage());
+        }
+        return Result.success("结算成功");
+    }
+
 
 }

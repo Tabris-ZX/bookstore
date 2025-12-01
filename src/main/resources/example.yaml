@@ -15,7 +15,6 @@ server:
 
 #项目物理地址
 base-dir:
-
 path:
   data-dir: ${base-dir}/data
   pst-dir: ${data-dir}/pst #持久数据
@@ -26,16 +25,18 @@ path:
   log-dir: ${tmp-dir}/logs
 
 jwt:
-  secret: #jwt签名
-  expiration: 36000
+  secret:
+  expiration: 3600000
 
 ai:
-  openai:
-    api-key: sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    api-base-url: https://api.openai.com/v1
+  gemini:
+    model: gemini-2.5-flash
+    api-base-url:
+    api-key:
     timeout: 30
 
   silicon-flow:
-    api-key: sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    api-key:
     api-base-url: https://api.siliconflow.cn/v1/chat/completions
+    model: deepseek-ai/DeepSeek-R1-0528-Qwen3-8B
     timeout: 30

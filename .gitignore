@@ -1,6 +1,6 @@
 
 #数据
-application.yaml
+/src/main/resources/application.yaml
 data/
 
 

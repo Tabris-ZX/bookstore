@@ -8,6 +8,7 @@ import schoolwork.bookstore.dto.Result;
 import schoolwork.bookstore.service.BookService;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/books")
@@ -23,7 +24,6 @@ public class BookController {
         List<Book> books = bookService.getAllBooks();
         return Result.success(books);
     }
-
     /**
      * 分页查询
      */
@@ -32,6 +32,12 @@ public class BookController {
         IPage<Book> books = bookService.pageBooks(page, size);
         PageResponse<Book> response = new PageResponse<>(page,size, books.getTotal(), books.getRecords());
         return Result.success(response);
+    }
+
+    @GetMapping("/{bid}")
+    public Result getBookByBid(@PathVariable long bid) {
+        Book book = bookService.getBookByBid(bid);
+        return Result.success(book);
     }
 
     @GetMapping("/search")
@@ -49,6 +55,17 @@ public class BookController {
             PageResponse<Book> response = new PageResponse<>(page,size, books.getTotal(), books.getRecords());
             return Result.success(response);
         }
-
     }
+//    @GetMapping("/recommend")
+//    public Result getRecommendedBooks(String wanting) {
+//        List<Book> books = bookService.getRecommendedBooks(wanting);
+//        return Result.success(books);
+//    }
+
+    @PostMapping("/recommend/ai")
+    public CompletableFuture<Result> getRecommendedBooks(@RequestBody String wanting) {
+        return bookService.getAlRecommendation(wanting)
+                .thenApply(Result::success);
+    }
+
 }

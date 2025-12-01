@@ -18,6 +18,4 @@ public interface AdminService {
     boolean removeBook(long bid);
     boolean updateBookInfo(Book book);
     boolean updateBookStock(long bid, int curStock);
-
-
 }
