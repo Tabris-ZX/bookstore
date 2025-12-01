@@ -8,10 +8,11 @@ import org.springframework.context.annotation.Configuration;
 public class AIConfig {
 
     @Data
-    @ConfigurationProperties(prefix = "ai.openai")
-    public static class OpenAI {
+    @ConfigurationProperties(prefix = "ai.gemini")
+    public static class Gemini {
         String apiKey;
         String apiBaseUrl;
+        String model;
         Integer timeout;
     }
 
@@ -20,6 +21,7 @@ public class AIConfig {
     public static class SiliconFlow {
         private String apiKey;
         private String apiBaseUrl;
+        private  String model;
         private Integer timeout;
     }
 }

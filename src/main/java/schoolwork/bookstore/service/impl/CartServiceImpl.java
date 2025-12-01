@@ -2,6 +2,7 @@ package schoolwork.bookstore.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import schoolwork.bookstore.mapper.BookMapper;
 import schoolwork.bookstore.mapper.CartMapper;
 import schoolwork.bookstore.mapper.OrderMapper;
 import schoolwork.bookstore.model.Order;
@@ -11,11 +12,13 @@ import java.util.Map;
 
 @Service
 public class CartServiceImpl implements CartService {
+    private final BookMapper bookMapper;
     CartMapper cartMapper;
     OrderMapper orderMapper;
-    public CartServiceImpl(CartMapper cartMapper, OrderMapper orderMapper) {
+    public CartServiceImpl(CartMapper cartMapper, OrderMapper orderMapper, BookMapper bookMapper) {
         this.cartMapper = cartMapper;
         this.orderMapper = orderMapper;
+        this.bookMapper = bookMapper;
     }
 
     @Override
@@ -35,28 +38,29 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public boolean buyBooksInCart(long uid) {
-        try{
-            Map<Long,Integer> cartInfo = cartMapper.getCartBooks(uid);
-            double totalPrice = cartMapper.getCartTotalPrice(uid);
-            cartMapper.clearCart(uid);
-            Order order = new Order(uid,cartInfo, totalPrice);
-            orderMapper.insert(order);
-        }catch (Exception e){
-            return false;
+    public void cartCheckout(long uid) {
+
+        Map<Long, Integer> cartInfo = cartMapper.getCartBooks(uid);
+        if (cartInfo == null || cartInfo.isEmpty()) {throw new RuntimeException("购物车为空");}
+        for (var book : cartInfo.entrySet()) {
+            int rows = bookMapper.solveSold(book.getKey(),book.getValue());
+            if (rows == 0) {
+                throw new RuntimeException("图书 " + book.getKey() + " 库存不足");
+            }
         }
-        return true;
+        double totalPrice = cartMapper.getCartTotalPrice(uid);
+        Order order = new Order(uid, cartInfo, totalPrice);
+        orderMapper.insert(order);
+        cartMapper.clearCart(uid);
     }
-//
-//    private double solvePrice(Map<Long,Integer> cartInfo){
-//        double total = 0.0;
-//        for (Map.Entry<Long, Integer> entry : cartInfo.entrySet()) {
-//            Long bid = entry.getKey();
-//            Integer number = entry.getValue();
-//            double price = 10.0;
-//            total += price * number;
-//        }
-//        return total;
+
+
+//    public boolean checkStock(long bid, int number) {
+//        return bookMapper.checkStock(bid,number);
+//    }
+
+//    public boolean checkout(long uid) {
+//        return buyBooksInCart(uid);
 //    }
 
 

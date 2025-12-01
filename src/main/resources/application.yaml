@@ -29,12 +29,14 @@ jwt:
     expiration: 3600000
 
 ai:
-  openai:
-    api-key: sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    api-base-url: https://api.openai.com/v1
+  gemini:
+    model: gemini-2.5-lite
+    api-base-url: https://api-proxy.me/gemini/v1beta/models/gemini-2.5-flash:generateContent
+    api-key: AIzaSyAr93KguZF-tXnvxhJdU7DWd7dmNNeq1wU
     timeout: 30
 
   silicon-flow:
-    api-key: sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    api-key: Bearer sk-iqmzvzucfyjeneusfwtdgovyrrywqichshuylhetxtsntiuc
     api-base-url: https://api.siliconflow.cn/v1/chat/completions
+    model: deepseek-ai/DeepSeek-R1-0528-Qwen3-8B
     timeout: 30

@@ -1,24 +1,30 @@
 package schoolwork.bookstore.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Service;
 import schoolwork.bookstore.config.PathConfig;
+import schoolwork.bookstore.dto.AIData;
 import schoolwork.bookstore.mapper.BookMapper;
 import schoolwork.bookstore.model.Book;
 import schoolwork.bookstore.service.BookService;
+import schoolwork.bookstore.util.AIUtil;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class BookServiceImpl implements BookService {
 
     PathConfig pathConfig;
     BookMapper bookMapper;
-    public BookServiceImpl(PathConfig pathConfig,BookMapper bookMapper) {
+    AIUtil aiUtil;
+    public BookServiceImpl(PathConfig pathConfig, BookMapper bookMapper, AIUtil aiUtil) {
         this.pathConfig = pathConfig;
         this.bookMapper = bookMapper;
+        this.aiUtil = aiUtil;
     }
 
     @Override
@@ -62,8 +68,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> searchBooksByKeyword(String keyword) {
-        return bookMapper.selectList(new LambdaQueryWrapper<Book>().like(Book::getTitle,keyword));
+    public CompletableFuture<String> getAlRecommendation(String wanting) {
+        List<AIData> books = bookMapper.getBookInfoForAI();
+        String bookInfo = JSON.toJSONString(books);
+        return aiUtil.getGeminiRecommendation(wanting,bookInfo);
     }
 
 //    @Override
