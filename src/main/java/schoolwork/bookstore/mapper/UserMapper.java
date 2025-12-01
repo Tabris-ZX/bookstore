@@ -10,11 +10,11 @@ import schoolwork.bookstore.model.User;
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
 
-    @Select("SELECT * FROM users WHERE username = #{username} AND password = #{password}")
-    User getUserByUsername(@Param("username") String username, @Param("password") String password);
+    @Select("SELECT * FROM users WHERE username = #{username}")
+    User getUserByUsername(@Param("username") String username);
 
-    @Select("SELECT * FROM users WHERE uid = #{uid} AND password = #{password}")
-    User getUserByUid(@Param("uid") long uid, @Param("password") String password);
+    @Select("SELECT * FROM users WHERE uid = #{uid}")
+    User getUserByUid(@Param("uid") long uid);
 
     @Update("UPDATE users set status = 0 where uid = #{uid}")
     boolean banUser(@Param("uid") long uid);

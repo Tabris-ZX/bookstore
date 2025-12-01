@@ -1,6 +1,7 @@
 package schoolwork.bookstore.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import schoolwork.bookstore.mapper.*;
@@ -36,6 +37,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public boolean register(String username, String password) {
         try{
+            password = BCrypt.hashpw(password, BCrypt.gensalt(10));
             User user = new User(username, password);
             UserInfo userInfo = new UserInfo(user.getUid());
             return userMapper.insert(user) == 1&& userInfoMapper.insert(userInfo) == 1;
@@ -46,12 +48,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User loginByUsername(String username, String password) {
-        return userMapper.getUserByUsername(username, password);
+        User user = userMapper.getUserByUsername(username);
+        if(user == null||!BCrypt.checkpw(password, user.getPassword())) return null;
+        return user;
     }
 
     @Override
     public User loginByUid(long uid, String password) {
-        return userMapper.getUserByUid(uid, password);
+        User user = userMapper.getUserByUid(uid);
+        if(user == null||!BCrypt.checkpw(password, user.getPassword())) return null;
+        return user;
     }
 
     @Override
@@ -65,10 +71,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public boolean changeAuth(long uid, String username, String password) {
+    public boolean changeAuth(long uid, String type, String content) {
+        if (content.isEmpty()) return false;
         try{
-            if(username!=null) userMapper.updateUsername(uid,username);
-            if(password!=null) userMapper.updatePassword(uid,password);
+            if(type.equals("username")) userMapper.updateUsername(uid,content);
+            else if(type.equals("password")) userMapper.updatePassword(uid,content);
         }catch (Exception e){
             return false;
         }
@@ -97,4 +104,5 @@ public class UserServiceImpl implements UserService {
     public boolean submitCartOrder(Order order) {
         return orderMapper.insert(order) == 1;
     }
+
 }

@@ -15,18 +15,11 @@ public class CartController {
         this.cartService = cartService;
     }
 
-//    @PostMapping("/{bid}")
-//    public Result addBooksToCart(HttpServletRequest request,
-//                                 @PathVariable long bid,
-//                                 @RequestBody Integer number) {
-//        boolean result = cartService.updateBooksInCart(JwtUtil.getUid(request),bid, number);
-//        return result? Result.success(): Result.error("添加图书失败");
-//    }
 
-    @PutMapping("/{bid}")
+    @PutMapping
     public Result updateBooksInCart(HttpServletRequest request,
-                                    @PathVariable long bid,
-                                    @RequestBody Integer number) {
+                                    @RequestParam long bid,
+                                    @RequestParam int number) {
         boolean result = cartService.updateBooksInCart(JwtUtil.getUid(request), bid, number);
         return result ? Result.success() : Result.error("更新图书失败");
     }

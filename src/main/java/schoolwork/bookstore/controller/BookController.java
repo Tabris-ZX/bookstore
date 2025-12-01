@@ -2,7 +2,6 @@ package schoolwork.bookstore.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.web.bind.annotation.*;
-import schoolwork.bookstore.config.PathConfig;
 import schoolwork.bookstore.model.Book;
 import schoolwork.bookstore.dto.PageResponse;
 import schoolwork.bookstore.dto.Result;
@@ -38,16 +37,15 @@ public class BookController {
     @GetMapping("/search")
     public Result getBooksByCondition(@RequestParam(required = false) Integer page,
                                       @RequestParam(required = false) Integer size,
-                                      @RequestParam(required = false) String keyword,
+                                      @RequestParam(required = false) String title,
                                       @RequestParam(required = false) String author,
                                       @RequestParam(required = false) String tags,
                                       @RequestParam(required = false) Boolean isStock){
 
         if(page == null || size == null)
-
-            return Result.success(bookService.getBooksByCondition(keyword, author, tags, isStock));
+            return Result.success(bookService.getBooksByCondition(title, author, tags, isStock));
         else{
-            IPage<Book> books = bookService.pageBooksByCondition(page,size,keyword, author, tags, isStock);
+            IPage<Book> books = bookService.pageBooksByCondition(page,size, title, author, tags, isStock);
             PageResponse<Book> response = new PageResponse<>(page,size, books.getTotal(), books.getRecords());
             return Result.success(response);
         }

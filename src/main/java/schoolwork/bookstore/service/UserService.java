@@ -11,7 +11,7 @@ public interface UserService {
     boolean register(String username, String password);
     User loginByUsername(String username, String password);
     User loginByUid(long uid, String password);
-    boolean changeAuth(long uid, String username, String password);
+    boolean changeAuth(long uid, String type, String content);
     boolean updateInfo(UserInfo userInfo);
     boolean forgetPassword(String username);
     boolean addBooksToCart(long uid, long bid, int number);

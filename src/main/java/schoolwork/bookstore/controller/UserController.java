@@ -28,7 +28,7 @@ public class UserController {
     @PostMapping("/login")
     public Result login(@RequestBody LoginRequest loginUser){
         User cur;
-        switch (loginUser.getLoginType()){
+        switch (loginUser.getType()){
             case "username" ->
                     cur = userService.loginByUsername(loginUser.getUsername(), loginUser.getPassword());
             case "uid" ->
@@ -54,25 +54,31 @@ public class UserController {
         return Result.success(userService.getUserByUid(uid));
     }
 
-    @GetMapping("/profile")
-    public Result getProfile(HttpServletRequest request) {
+    @GetMapping("/info")
+    public Result getInfo(HttpServletRequest request) {
         long uid = JwtUtil.getUid(request);
-        return Result.success(userService.getUserByUid(uid));
+        //todo 获取用户详细信息
+        return Result.success();
     }
 
-    @PutMapping("/{uid}")
-    public Result updateUserProfile(@RequestBody UserInfo userInfo) {
+    @PutMapping
+    public Result updateUserInfo(HttpServletRequest request,
+                                 @RequestBody UserInfo userInfo) {
+        if((JwtUtil.getUid(request)!=userInfo.getUid())){
+            return Result.error("只能更新自己的信息");
+        }
         boolean result = userService.updateInfo(userInfo);
         return result ? Result.success() : Result.error("更新用户信息失败");
+    }   
+
+    @PutMapping("/auth")
+    public Result changeAuth(HttpServletRequest request,
+                             @RequestParam String type,
+                             @RequestBody String content) {
+        boolean result = userService.changeAuth(JwtUtil.getUid(request),type, content);
+        return result ? Result.success() : Result.error("修改认证信息失败");
     }
 
-    @PutMapping("/changeAuth")
-    public Result changePassword(HttpServletRequest request,
-                                 @RequestBody String username,
-                                 @RequestBody String password) {
-        boolean result = userService.changeAuth(JwtUtil.getUid(request), username, password);
-        return result ? Result.success() : Result.error("修改失败");
-    }
 
     @GetMapping("/buy")
     public Result buyBooks(HttpServletRequest request,

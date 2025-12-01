@@ -44,7 +44,7 @@ public class AdminController {
     @GetMapping("/users")
     public Result pageUsers(@Param("page") Integer page,
                             @Param("size") Integer size) {
-        return Result.success(adminService.getAllUsers());
+        return Result.success(adminService.pageUsers(page,size));
     }
 
 

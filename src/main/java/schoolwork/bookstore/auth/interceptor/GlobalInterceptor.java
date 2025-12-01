@@ -26,6 +26,10 @@ public class GlobalInterceptor implements HandlerInterceptor {
         try {
             Claims claims = JwtUtil.parseJwt(jwt);
             Long uid = claims.get("uid", Long.class);
+            int status = claims.get("status", Integer.class);
+            if (status < 1) {
+                return writeError(response, "用户被封禁，申诉请联系管理员");
+            }
             if (uid == null) {
                 return writeError(response, "token 无效，请重新登录");
             }

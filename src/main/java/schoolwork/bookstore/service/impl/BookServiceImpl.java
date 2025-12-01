@@ -75,11 +75,11 @@ public class BookServiceImpl implements BookService {
 //        return List.of();
 //    }
 
-    private LambdaQueryWrapper<Book> conditions(String keyword, String author, String tags, Boolean isStock) {
+    private LambdaQueryWrapper<Book> conditions(String title, String author, String tags, Boolean isStock) {
         LambdaQueryWrapper<Book> wrapper = new LambdaQueryWrapper<>();
-        if(keyword!=null && !keyword.isEmpty()) wrapper.like(Book::getTitle,keyword);
-        if(author!=null && !author.isEmpty()) wrapper.eq(Book::getAuthor,author);
-        if(tags!=null && !tags.isEmpty()) wrapper.eq(Book::getTags,tags);
+        if(title!=null && !title.isEmpty()) wrapper.like(Book::getTitle,title);
+        if(author!=null && !author.isEmpty()) wrapper.like(Book::getAuthor,author);
+        if(tags!=null && !tags.isEmpty()) wrapper.like(Book::getTags,tags);
         if(isStock!=null && isStock) wrapper.gt(Book::getStock,0);
         return wrapper;
     }
