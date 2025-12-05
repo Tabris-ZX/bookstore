@@ -6,11 +6,16 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import schoolwork.bookstore.mapper.BookMapper;
+import schoolwork.bookstore.mapper.CartMapper;
+import schoolwork.bookstore.mapper.UserAddrMapper;
 import schoolwork.bookstore.mapper.UserMapper;
 import schoolwork.bookstore.model.Book;
+import schoolwork.bookstore.model.Cart;
 import schoolwork.bookstore.model.User;
 import schoolwork.bookstore.service.AdminService;
+import schoolwork.bookstore.service.CartService;
 import schoolwork.bookstore.util.Build;
 
 import java.util.List;
@@ -18,14 +23,15 @@ import java.util.List;
 @Service
 public class AdminServiceImpl implements AdminService {
 
+    private final UserAddrMapper userAddrMapper;
     UserMapper userMapper;
     BookMapper bookMapper;
-    HttpServletRequest request;
+    CartMapper cartMapper;
 
-    public AdminServiceImpl(UserMapper userMapper, BookMapper bookMapper, HttpServletRequest request) {
+    public AdminServiceImpl(UserMapper userMapper, BookMapper bookMapper, CartMapper cartMapper, UserAddrMapper userAddrMapper) {
         this.userMapper = userMapper;
         this.bookMapper = bookMapper;
-        this.request = request;
+        this.userAddrMapper = userAddrMapper;
     }
 
     @Override
@@ -59,10 +65,20 @@ public class AdminServiceImpl implements AdminService {
         return userMapper.insert(user) > 0;
     }
 
+    @Override
+    @Transactional
     public boolean removeUser(long uid) {
-        return userMapper.delete(new LambdaQueryWrapper<User>().eq(User::getUid, uid)) > 0;
+        try{
+            cartMapper.deleteById(uid);
+            userAddrMapper.deleteById(uid);
+            userMapper.delete(new LambdaQueryWrapper<User>().eq(User::getUid, uid));
+        }catch (Exception e){
+            return false;
+        }
+        return true;
     }
 
+    @Override
     public boolean addBook(Book book) {
         long bid=Build.buildBid();
         while (bookMapper.selectOne(new LambdaQueryWrapper<Book>().eq(Book::getBid,bid))!=null){
@@ -82,6 +98,7 @@ public class AdminServiceImpl implements AdminService {
         return bookMapper.updateBookStock(bid, curStock);
     }
 
+    @Override
     public boolean removeBook(long bid) {
         return bookMapper.deleteById(bid) > 0;
     }

@@ -16,6 +16,11 @@ public class CartController {
     }
 
 
+    @GetMapping
+    public Result getBooksInCart(HttpServletRequest request) {
+        return Result.success(cartService.getBooksInCart(JwtUtil.getUid(request)));
+    }
+
     @PutMapping
     public Result updateBooksInCart(HttpServletRequest request,
                                     @RequestParam long bid,
@@ -45,6 +50,4 @@ public class CartController {
         }
         return Result.success("结算成功");
     }
-
-
 }

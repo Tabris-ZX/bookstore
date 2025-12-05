@@ -24,11 +24,13 @@ public class BookController {
         List<Book> books = bookService.getAllBooks();
         return Result.success(books);
     }
+
     /**
      * 分页查询
      */
     @GetMapping
-    public Result getBooks(@RequestParam int page, @RequestParam int size) {
+    public Result getBooks(@RequestParam(value = "page",defaultValue = "1") int page,
+                           @RequestParam(value = "page",defaultValue = "20") int size) {
         IPage<Book> books = bookService.pageBooks(page, size);
         PageResponse<Book> response = new PageResponse<>(page,size, books.getTotal(), books.getRecords());
         return Result.success(response);
@@ -46,7 +48,7 @@ public class BookController {
                                       @RequestParam(required = false) String title,
                                       @RequestParam(required = false) String author,
                                       @RequestParam(required = false) String tags,
-                                      @RequestParam(required = false) Boolean isStock){
+                                      @RequestParam(value = "isStock",defaultValue = "false") boolean isStock){
 
         if(page == null || size == null)
             return Result.success(bookService.getBooksByCondition(title, author, tags, isStock));
@@ -56,11 +58,6 @@ public class BookController {
             return Result.success(response);
         }
     }
-//    @GetMapping("/recommend")
-//    public Result getRecommendedBooks(String wanting) {
-//        List<Book> books = bookService.getRecommendedBooks(wanting);
-//        return Result.success(books);
-//    }
 
     @PostMapping("/recommend/ai")
     public CompletableFuture<Result> getRecommendedBooks(@RequestBody String wanting) {

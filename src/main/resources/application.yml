@@ -14,15 +14,15 @@ server:
   port: 8080
 
 #项目物理地址
-base-dir: D:\working\Java\projects\bookstore
+base-dir: D:/working/Java/projects/bookstore
 path:
   data-dir: ${base-dir}/data
-  pst-dir: ${data-dir}/pst #持久数据
-  tmp-dir: ${data-dir}/tmp #缓存数据
+  pst-dir: ${path.data-dir}/pst #持久数据
+  tmp-dir: ${path.data-dir}/tmp #缓存数据
 
-  image-dir: ${pst-dir}/images
-  upload-dir: ${tmp-dir}/uploads
-  log-dir: ${tmp-dir}/logs
+  image-dir: ${path.data-dir}/images
+  upload-dir: ${path.data-dir}/uploads
+  log-dir: ${path.data-dir}/logs
 
 jwt:
     secret: njuit
@@ -30,9 +30,9 @@ jwt:
 
 ai:
   gemini:
-    model: gemini-2.5-flash
-    api-base-url: https://api-proxy.me/gemini/v1beta/models/gemini-2.5-flash:generateContent
     api-key: AIzaSyAr93KguZF-tXnvxhJdU7DWd7dmNNeq1wU
+    api-base-url: https://api-proxy.me/gemini/v1beta/models/gemini-2.5-flash:generateContent
+    model: gemini-2.5-flash
     timeout: 30
 
   silicon-flow:

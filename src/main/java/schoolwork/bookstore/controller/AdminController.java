@@ -26,16 +26,6 @@ public class AdminController {
         return adminService.removeUser(uid)? Result.success("用户删除成功") : Result.error("删除用户失败");
     }
 
-    @PostMapping("/book")
-    public Result addBook(@RequestBody Book book) {
-        return adminService.addBook(book) ? Result.success("图书添加成功") : Result.error("添加图书失败");
-    }
-
-    @PutMapping("/book/{bid}")
-    public Result updateBook(@RequestBody Book book) {
-        return adminService.updateBookInfo(book) ? Result.success("图书更新成功") : Result.error("更新图书信息失败");
-    }
-
     @GetMapping("/users/list")
     public Result getAllUsers() {
         return Result.success(adminService.getAllUsers());
@@ -47,7 +37,6 @@ public class AdminController {
         return Result.success(adminService.pageUsers(page,size));
     }
 
-
     @GetMapping("/ban/{uid}")
     public Result banUser(@PathVariable long uid) {
         return adminService.banUser(uid) ? Result.success("用户封禁成功") : Result.error("封禁用户失败");
@@ -57,5 +46,25 @@ public class AdminController {
         return adminService.unBanUser(uid) ? Result.success("用户解封成功") : Result.error("解封用户失败");
     }
 
+    @PostMapping("/book")
+    public Result addBook(@RequestBody Book book) {
+        return adminService.addBook(book) ? Result.success("图书添加成功") : Result.error("添加图书失败");
+    }
+
+    @PutMapping("/book/{bid}")
+    public Result updateBook(@RequestBody Book book) {
+        return adminService.updateBookInfo(book) ? Result.success("图书更新成功") : Result.error("更新图书信息失败");
+    }
+
+    @DeleteMapping("/book/{bid}")
+    public Result deleteBook(@PathVariable long bid) {
+        return adminService.removeBook(bid) ? Result.success("图书删除成功") : Result.error("删除图书失败");
+    }
+
+    @PutMapping("/stock/{bid}")
+    public Result updateBookStock(@PathVariable long bid,
+                                  @RequestParam int stock) {
+        return adminService.updateBookStock(bid, stock) ? Result.success("图书库存更新成功") : Result.error("更新图书库存失败");
+    }
 }
 

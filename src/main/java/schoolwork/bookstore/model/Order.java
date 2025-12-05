@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-
 /**
  * 订单实体类
  */
@@ -23,26 +22,32 @@ public class Order {
     @TableId
     private String oid;
     private Long uid;
-    private Map<Long,Integer> items; //<bid,number>
+    private Map<Long,Integer> books; //<bid,number>
+    private String name;
+    private Long phone;
+    private String address;
     private Integer status;
     @TableField("total_price")
     private Double totalPrice;
     @TableField("created_time")
     private LocalDateTime createdTime;
 
-    public Order(long uid,long bid, int number) {
+    public Order(long uid,long bid, int number, double price,UserAddr addr) {
         this.oid= UUID.randomUUID().toString();
         this.uid = uid;
-        this.items = Map.of(bid,number);
-    }
-    public Order(long uid, Map<Long,Integer> books,double price) {
-        this.oid= UUID.randomUUID().toString();
-        this.uid = uid;
-        this.items = books;
+        this.books = Map.of(bid,number);
         this.totalPrice = price;
+        this.name = addr.getName();
+        this.phone = addr.getPhone();
+        this.address = addr.getAddress();
+    }
+    public Order(long uid, Map<Long,Integer> books,double price,UserAddr addr) {
+        this.oid= UUID.randomUUID().toString();
+        this.uid = uid;
+        this.books = books;
+        this.totalPrice = price;
+        this.name = addr.getName();
+        this.phone = addr.getPhone();
+        this.address = addr.getAddress();
     }
 }
-
-
-
-

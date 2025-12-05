@@ -12,18 +12,18 @@ import lombok.Data;
 @Data
 @TableName("books")
 public class Book {
-    @TableId(type = IdType.AUTO)
-    private Integer id;
+    @TableId
     private Long bid;
+    private String isbn;
     private String title;
     private String author;
     private String description;
-    private String publish;
+    private String publisher;
     @TableField("cover_url")
     private String coverUrl;
     private String tags;
+    private Integer rating;
     private Double price;
     private Integer stock;
     private Integer sales;
-
 }

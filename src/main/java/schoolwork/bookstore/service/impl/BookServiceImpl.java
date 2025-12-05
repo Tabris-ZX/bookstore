@@ -74,21 +74,14 @@ public class BookServiceImpl implements BookService {
         return aiUtil.getGeminiRecommendation(wanting,bookInfo);
     }
 
-//    @Override
-//    public List<Book> searchBooksByCondition(BookQuery bookQuery) {
-//        LambdaQueryWrapper<Book> queryWrapper = new LambdaQueryWrapper<>();
-//        if(bookQuery.getTags()!=null) queryWrapper.eq(Book::getTags,bookQuery.getTags());
-//        if (bookQuery.getAuthor()!=null) queryWrapper.eq(Book::getAuthor,bookQuery.getAuthor());
-////        if(bookQuery.isStock()) queryWrapper.eq(Book::getStock,bookQuery.getStock());
-//        return List.of();
-//    }
 
-    private LambdaQueryWrapper<Book> conditions(String title, String author, String tags, Boolean isStock) {
+
+    private LambdaQueryWrapper<Book> conditions(String title, String author, String tags, boolean isStock) {
         LambdaQueryWrapper<Book> wrapper = new LambdaQueryWrapper<>();
         if(title!=null && !title.isEmpty()) wrapper.like(Book::getTitle,title);
         if(author!=null && !author.isEmpty()) wrapper.like(Book::getAuthor,author);
         if(tags!=null && !tags.isEmpty()) wrapper.like(Book::getTags,tags);
-        if(isStock!=null && isStock) wrapper.gt(Book::getStock,0);
+        if(isStock) wrapper.gt(Book::getStock,0);
         return wrapper;
     }
 }

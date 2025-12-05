@@ -12,8 +12,8 @@ import schoolwork.bookstore.auth.interceptor.GlobalInterceptor;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${path.data-dir}")
-    private String dataDir;
+    @Value("${path.image-dir}")
+    private String imageDir;
 
     GlobalInterceptor globalInterceptor;
     AdminInterceptor adminInterceptor;
@@ -26,7 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(globalInterceptor).addPathPatterns("/api/**").excludePathPatterns("/api/users/login","/api/users/register","/api/books/**");
+        registry.addInterceptor(globalInterceptor).addPathPatterns("/**").excludePathPatterns("/api/users/login","/api/users/register","/api/books/**");
         registry.addInterceptor(adminInterceptor).addPathPatterns("/api/admin/**");
     }
 
@@ -41,20 +41,11 @@ public class WebConfig implements WebMvcConfigurer {
 
     /**
      * 配置静态资源映射
-     * 将URL路径映射到文件系统路径，使题解文件可以被访问
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 映射题解文件目录
-        registry.addResourceHandler("/solutions/**")
-                .addResourceLocations("file:" + dataDir + "/solutions/");
-
-        // 映射待审核题解目录
-        registry.addResourceHandler("/pending-solutions/**")
-                .addResourceLocations("file:" + dataDir + "/pending-solutions/");
-
-        // 映射用户文件目录
-        registry.addResourceHandler("/users/**")
-                .addResourceLocations("file:" + dataDir + "/users/");
+        // 映射图书封面图片
+        registry.addResourceHandler("/uploads/covers/**")
+                .addResourceLocations("file:" + imageDir + "/bookCovers/");
     }
 }

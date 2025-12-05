@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import schoolwork.bookstore.dto.LoginRequest;
 import schoolwork.bookstore.model.User;
 import schoolwork.bookstore.dto.Result;
-import schoolwork.bookstore.model.UserInfo;
+import schoolwork.bookstore.model.UserAddr;
 import schoolwork.bookstore.service.UserService;
 import schoolwork.bookstore.util.JwtUtil;
 
@@ -54,21 +54,29 @@ public class UserController {
         return Result.success(userService.getUserByUid(uid));
     }
 
-    @GetMapping("/info")
-    public Result getInfo(HttpServletRequest request) {
-        long uid = JwtUtil.getUid(request);
-        //todo 获取用户详细信息
-        return Result.success();
+    /**
+     * 获取用户地址信息
+     */
+    @GetMapping("/addr")
+    public Result getUserAddr(HttpServletRequest request) {
+        UserAddr userAddr = userService.getUserAddr(JwtUtil.getUid(request));
+        return Result.success(userAddr);
     }
 
-    @PutMapping
-    public Result updateUserInfo(HttpServletRequest request,
-                                 @RequestBody UserInfo userInfo) {
-        if((JwtUtil.getUid(request)!=userInfo.getUid())){
-            return Result.error("只能更新自己的信息");
+    // @GetMapping("/profile")
+    // public Result getProfile(HttpServletRequest request) {
+    //     User user = userService.getUserByUid(JwtUtil.getUid(request));
+    //     return Result.success(user);
+    // }
+
+    @PutMapping("/addr")
+    public Result updateUserAddr(HttpServletRequest request,
+                                 @RequestBody UserAddr userAddr) {
+        if((JwtUtil.getUid(request)!= userAddr.getUid())){
+            return Result.error("只能更新自己的地址信息");
         }
-        boolean result = userService.updateInfo(userInfo);
-        return result ? Result.success() : Result.error("更新用户信息失败");
+        boolean result = userService.updateInfo(userAddr);
+        return result ? Result.success() : Result.error("更新用户地址信息失败");
     }   
 
     @PutMapping("/auth")
@@ -78,7 +86,6 @@ public class UserController {
         boolean result = userService.changeAuth(JwtUtil.getUid(request),type, content);
         return result ? Result.success() : Result.error("修改认证信息失败");
     }
-
 
     @GetMapping("/buy")
     public Result buyBooks(HttpServletRequest request,

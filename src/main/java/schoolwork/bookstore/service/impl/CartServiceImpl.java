@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import schoolwork.bookstore.mapper.BookMapper;
 import schoolwork.bookstore.mapper.CartMapper;
 import schoolwork.bookstore.mapper.OrderMapper;
+import schoolwork.bookstore.mapper.UserAddrMapper;
 import schoolwork.bookstore.model.Order;
 import schoolwork.bookstore.service.CartService;
 
@@ -13,12 +14,20 @@ import java.util.Map;
 @Service
 public class CartServiceImpl implements CartService {
     private final BookMapper bookMapper;
+    private final UserAddrMapper userAddrMapper;
     CartMapper cartMapper;
     OrderMapper orderMapper;
-    public CartServiceImpl(CartMapper cartMapper, OrderMapper orderMapper, BookMapper bookMapper) {
+    public CartServiceImpl(CartMapper cartMapper, OrderMapper orderMapper, BookMapper bookMapper, UserAddrMapper userAddrMapper) {
         this.cartMapper = cartMapper;
         this.orderMapper = orderMapper;
         this.bookMapper = bookMapper;
+        this.userAddrMapper = userAddrMapper;
+    }
+
+
+    @Override
+    public Map<Long, Integer> getBooksInCart(long uid) {
+        return cartMapper.getCartBooks(uid);
     }
 
     @Override
@@ -49,7 +58,7 @@ public class CartServiceImpl implements CartService {
             }
         }
         double totalPrice = cartMapper.getCartTotalPrice(uid);
-        Order order = new Order(uid, cartInfo, totalPrice);
+        Order order = new Order(uid, cartInfo, totalPrice,userAddrMapper.selectById(uid));
         orderMapper.insert(order);
         cartMapper.clearCart(uid);
     }
