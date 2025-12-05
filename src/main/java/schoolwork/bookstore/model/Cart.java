@@ -1,5 +1,6 @@
 package schoolwork.bookstore.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -18,10 +19,13 @@ public class Cart {
     private Long uid;
     private Long bid;
     private Integer number;
+    @TableField("total_price")
+    private Double totalPrice;
 
-    public Cart(long uid, long bid, int number) {
+    public Cart(long uid, long bid, int number,double totalPrice) {
         this.uid = uid;
         this.bid = bid;
         this.number = number;
+        this.totalPrice = totalPrice;
     }
 }

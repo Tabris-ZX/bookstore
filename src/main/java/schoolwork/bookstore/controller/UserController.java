@@ -1,7 +1,9 @@
 package schoolwork.bookstore.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import schoolwork.bookstore.dto.LoginRequest;
 import schoolwork.bookstore.model.User;
 import schoolwork.bookstore.dto.Result;
@@ -9,6 +11,9 @@ import schoolwork.bookstore.model.UserAddr;
 import schoolwork.bookstore.service.UserService;
 import schoolwork.bookstore.util.JwtUtil;
 
+import java.io.IOException;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -93,6 +98,45 @@ public class UserController {
                            @RequestParam int number) {
         boolean result = userService.buyBooks(JwtUtil.getUid(request),bid, number);
         return result ? Result.success() : Result.error("购买失败");
+    }
+
+    @PostMapping("/chat/ai")
+    public Object getRecommendedBooks(HttpServletRequest request,
+                                      @RequestParam(defaultValue = "false") boolean stream,
+                                      @RequestBody String wanting) {
+        if (stream) {
+            SseEmitter emitter = new SseEmitter(60000L);
+            new Thread(() -> {
+                try {
+                    userService.getAlRecommendationStream(wanting, JwtUtil.getUid(request), chunk -> {
+                        try {
+                            emitter.send(SseEmitter.event()
+                                    .data(chunk)
+                                    .name("message"));
+                        } catch (IOException e) {
+                            log.error("发送流式数据失败", e);
+                            emitter.completeWithError(e);
+                        }
+                    });
+                    
+                    emitter.send(SseEmitter.event().data("[DONE]").name("done"));
+                    emitter.complete();
+                } catch (Exception e) {
+                    log.error("流式处理失败", e);
+                    try {
+                        emitter.send(SseEmitter.event().data("错误: " + e.getMessage()).name("error"));
+                        emitter.completeWithError(e);
+                    } catch (IOException ioException) {
+                        emitter.completeWithError(ioException);
+                    }
+                }
+            }).start();
+            return emitter;
+        } else {
+            // 非流式输出模式
+            return userService.getAlRecommendation(wanting, JwtUtil.getUid(request))
+                    .thenApply(Result::success);
+        }
     }
 
 }

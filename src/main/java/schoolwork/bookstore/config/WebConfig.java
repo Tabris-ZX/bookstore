@@ -26,7 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(globalInterceptor).addPathPatterns("/**").excludePathPatterns("/api/users/login","/api/users/register","/api/books/**");
+        registry.addInterceptor(globalInterceptor).addPathPatterns("/**").excludePathPatterns("/api/users/register","/api/users/login","/api/books/**");
         registry.addInterceptor(adminInterceptor).addPathPatterns("/api/admin/**");
     }
 
@@ -45,7 +45,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // 映射图书封面图片
-        registry.addResourceHandler("/uploads/covers/**")
+        registry.addResourceHandler("/api/books/covers/**")
                 .addResourceLocations("file:" + imageDir + "/bookCovers/");
     }
 }

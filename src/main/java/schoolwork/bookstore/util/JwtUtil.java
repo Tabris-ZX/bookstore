@@ -24,7 +24,8 @@ public class JwtUtil {
 
         Map<String,Object> map = new HashMap<>();
         map.put("uid",user.getUid());
-        map.put("username",user.getUsername());
+        map.put("status",user.getStatus());
+        map.put("role",user.getRole());
         String jwt = Jwts.builder().signWith(SignatureAlgorithm.HS256, jwtConfig.getSecret())
                 .setClaims(map)
                 .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpiration()))
@@ -37,6 +38,9 @@ public class JwtUtil {
     }
 
     public static long getUid(HttpServletRequest request){
+        if (request.getAttribute("uid") == null) {
+            return -1;
+        }
         String jwt = request.getAttribute("uid").toString();
         return Long.parseLong(jwt);
     }

@@ -42,7 +42,7 @@ public class GlobalInterceptor implements HandlerInterceptor {
         } catch (io.jsonwebtoken.MalformedJwtException e) {
             return writeError(response, "无效的 token，请重新登录");
         } catch (Exception e) {
-            return writeError(response, "身份验证失败，请重新登录");
+            return writeError(response, "身份验证失败，请重新登录"+e.getMessage());
         }
     }
 

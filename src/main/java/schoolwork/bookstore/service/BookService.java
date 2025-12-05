@@ -12,6 +12,5 @@ public interface BookService {
     IPage<Book> pageBooks(int curPage, int pageSize);
     IPage<Book> pageBooksByCondition(int curPage, int pageSize, String keyword, String author, String tags, Boolean isStock);
     Book getBookByBid(long bid);
-    CompletableFuture<String> getAlRecommendation(String wanting);
 
 }

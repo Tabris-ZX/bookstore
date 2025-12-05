@@ -19,9 +19,9 @@ public interface BookMapper extends BaseMapper<Book> {
     @Update("UPDATE books SET stock = #{curStock} WHERE bid = #{bid}")
     boolean updateBookStock(@Param("bid") long bid,@Param("curStock") int curStock);
 
-    @Insert("INSERT ignore INTO books(bid,ISBN,title, author, publisher,books.description,books.cover_url,rating,price) " +
-            "VALUES(#{bid},#{isbn},#{title}, #{author},#{publisher},#{desc},#{coverUrl},#{rating},#{price})")
-    void addBookByJson(long bid,String isbn,String title,String author,String publisher,String desc,String coverUrl,int rating,double price);
+    @Insert("INSERT ignore INTO books(bid,ISBN,title, author, publisher,books.description,books.cover_url,rating,price,books.sales) " +
+            "VALUES(#{bid},#{isbn},#{title}, #{author},#{publisher},#{desc},#{coverUrl},#{rating},#{price},#{sales})")
+    void addBookByJson(long bid,String isbn,String title,String author,String publisher,String desc,String coverUrl,int rating,double price,int sales);
 
     @Select("SELECT isbn FROM books")
     List<String> getBooksISBN();

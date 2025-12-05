@@ -8,7 +8,5 @@ public class AddData {
     public void addBookByJson() throws IOException {
         String json = new String(Files.readAllBytes(Paths.get("data.json")), "UTF-8");
 
-
-
     }
 }

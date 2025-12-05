@@ -37,7 +37,7 @@ public class addBooks {
 
     @Test
     void addBook() throws IOException {
-        String json = new String(Files.readAllBytes(Paths.get("top250.json")), StandardCharsets.UTF_8);
+        String json = new String(Files.readAllBytes(Paths.get(pathConfig.getDataDir()+"/top250.json")), StandardCharsets.UTF_8);
 
         ObjectMapper mapper = new ObjectMapper();
         List<Map<String, Object>> books = mapper.readValue(json, List.class);
@@ -51,7 +51,8 @@ public class addBooks {
                     book.get("comment").toString(),
                     book.get("cover_url").toString(),
                     Integer.parseInt(book.get("rating").toString()),
-                    Double.parseDouble(book.get("price").toString())
+                    Double.parseDouble(book.get("price").toString()),
+                    Integer.parseInt(book.get("rating_count").toString())
             );
 
         }

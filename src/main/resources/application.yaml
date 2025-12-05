@@ -17,8 +17,8 @@ server:
 base-dir: D:/working/Java/projects/bookstore
 path:
   data-dir: ${base-dir}/data
-  pst-dir: ${path.data-dir}/pst #持久数据
-  tmp-dir: ${path.data-dir}/tmp #缓存数据
+#  pst-dir: ${path.data-dir}/pst #持久数据
+#  tmp-dir: ${path.data-dir}/tmp #缓存数据
 
   image-dir: ${path.data-dir}/images
   upload-dir: ${path.data-dir}/uploads
@@ -26,17 +26,29 @@ path:
 
 jwt:
     secret: njuit
-    expiration: 3600000
+    expiration: 36_000_000
 
 ai:
   gemini:
-    api-key: AIzaSyAr93KguZF-tXnvxhJdU7DWd7dmNNeq1wU
-    api-base-url: https://api-proxy.me/gemini/v1beta/models/gemini-2.5-flash:generateContent
+    type: gemini
+    header: x-goog-api-key
+    api-key: AIzaSyBQj6L9AZu5krp9elN_XsH15ly7oLELFZs
+    api-base-url: https://api-proxy.me/gemini/v1beta/models/gemini-2.5-flash-lite:generateContent
     model: gemini-2.5-flash
     timeout: 30
 
   silicon-flow:
+    type: silicon-flow
+    header: Authorization
     api-key: Bearer sk-iqmzvzucfyjeneusfwtdgovyrrywqichshuylhetxtsntiuc
     api-base-url: https://api.siliconflow.cn/v1/chat/completions
     model: deepseek-ai/DeepSeek-R1-0528-Qwen3-8B
+    timeout: 30
+
+  ark:
+    type: ark
+    header: Authorization
+    api-key: Bearer 0f54a6fe-42e4-440a-b33f-87955cc04ec8
+    api-base-url: https://ark.cn-beijing.volces.com/api/v3/responses
+    model: ep-20251205170749-4snxt
     timeout: 30

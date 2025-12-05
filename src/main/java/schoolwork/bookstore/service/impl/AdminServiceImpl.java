@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.servlet.http.HttpServletRequest;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import schoolwork.bookstore.mapper.BookMapper;
@@ -14,6 +15,7 @@ import schoolwork.bookstore.mapper.UserMapper;
 import schoolwork.bookstore.model.Book;
 import schoolwork.bookstore.model.Cart;
 import schoolwork.bookstore.model.User;
+import schoolwork.bookstore.model.UserAddr;
 import schoolwork.bookstore.service.AdminService;
 import schoolwork.bookstore.service.CartService;
 import schoolwork.bookstore.util.Build;
@@ -57,7 +59,13 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public boolean addUser(User user) {
-        return userMapper.insert(user)==1;
+        try{
+            user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt(10)));
+            UserAddr userAddr = new UserAddr(user.getUid());
+            return userMapper.insert(user) == 1&& userAddrMapper.insert(userAddr) == 1;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     public boolean addUser(String username, String password) {

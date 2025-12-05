@@ -2,6 +2,7 @@ package schoolwork.bookstore.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import schoolwork.bookstore.dto.CartBooks;
 import schoolwork.bookstore.mapper.BookMapper;
 import schoolwork.bookstore.mapper.CartMapper;
 import schoolwork.bookstore.mapper.OrderMapper;
@@ -9,6 +10,7 @@ import schoolwork.bookstore.mapper.UserAddrMapper;
 import schoolwork.bookstore.model.Order;
 import schoolwork.bookstore.service.CartService;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -24,9 +26,8 @@ public class CartServiceImpl implements CartService {
         this.userAddrMapper = userAddrMapper;
     }
 
-
     @Override
-    public Map<Long, Integer> getBooksInCart(long uid) {
+    public List<CartBooks> getBooksInCart(long uid) {
         return cartMapper.getCartBooks(uid);
     }
 
@@ -48,13 +49,12 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public void cartCheckout(long uid) {
-
-        Map<Long, Integer> cartInfo = cartMapper.getCartBooks(uid);
+        List<CartBooks> cartInfo = cartMapper.getCartBooks(uid);
         if (cartInfo == null || cartInfo.isEmpty()) {throw new RuntimeException("购物车为空");}
-        for (var book : cartInfo.entrySet()) {
-            int rows = bookMapper.solveSold(book.getKey(),book.getValue());
+        for (CartBooks book : cartInfo) {
+            int rows = bookMapper.solveSold(book.getBid(),book.getNumber());
             if (rows == 0) {
-                throw new RuntimeException("图书 " + book.getKey() + " 库存不足");
+                throw new RuntimeException("图书 " + book.getBid() + " 库存不足");
             }
         }
         double totalPrice = cartMapper.getCartTotalPrice(uid);

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@TableName("user_info")
+@TableName("user_addr")
 public class UserAddr {
 
     @TableId

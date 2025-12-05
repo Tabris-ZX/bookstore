@@ -59,10 +59,4 @@ public class BookController {
         }
     }
 
-    @PostMapping("/recommend/ai")
-    public CompletableFuture<Result> getRecommendedBooks(@RequestBody String wanting) {
-        return bookService.getAlRecommendation(wanting)
-                .thenApply(Result::success);
-    }
-
 }
